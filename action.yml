@@ -1,9 +1,9 @@
-name: 'Skip Duplicate Actions'
-description: 'Skip duplicate workflow-runs. Skip or ignore specific paths. Cancel outdated workflow-runs.'
-author: fkirc
+name: 'Cancel Previous Runs Actions'
+description: 'Cancel previous workflow-runs. Skip duplicate workflow-runs. Skip or ignore specific paths. Cancel outdated workflow-runs.'
+author: larchliu
 branding:
   icon: 'stop-circle'
-  color: 'white'
+  color: 'green'
 inputs:
   github_token:
     description: 'Your GitHub Access Token'
