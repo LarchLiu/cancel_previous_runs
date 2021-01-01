@@ -1,0 +1,15 @@
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - uses: actions/checkout@v2
+      - run: yarn install --frozen-lockfile
+      - run: npm run build
+      - run: git diff --exit-code # Ensure that JS in dist was re-compiled
