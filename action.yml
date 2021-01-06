@@ -33,6 +33,10 @@ inputs:
     description: 'A JSON-array with triggers that should never be skipped'
     required: false
     default: '["workflow_dispatch", "schedule"]'
+  do_not_cancel:
+    escription: 'A JSON-array with triggers that should never be canceled'
+    required: false
+    default: '["repository_dispatch"]'
   concurrent_skipping:
     description: 'One of never, same_content, outdated_runs, always'
     required: true

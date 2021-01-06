@@ -9964,6 +9964,7 @@ async function main() {
             pathsIgnore: getStringArrayInput("paths_ignore"),
             paths: getStringArrayInput("paths"),
             doNotSkip: getStringArrayInput("do_not_skip"),
+            doNotCancel: getStringArrayInput("do_not_cancel"),
             concurrentSkipping: getConcurrentSkippingInput("concurrent_skipping"),
         };
     }
@@ -9976,7 +9977,7 @@ async function main() {
     if (cancelOthers) {
         await cancelOutdatedRuns(context);
     }
-    const cancelPrevious = getBooleanInput('cancel_previous', true);
+    const cancelPrevious = getBooleanInput('cancel_previous', false);
     if (cancelPrevious) {
         await cancelPreviousRuns(context);
     }
@@ -10028,9 +10029,17 @@ async function cancelPreviousRuns(context) {
     if (!cancelVictims.length) {
         return core.info(`Did not find other workflow-runs to be cancelled`);
     }
+    let should_skip = false;
     for (const victim of cancelVictims) {
-        await cancelWorkflowRun(victim, context);
+        if (context.doNotCancel.includes(victim.event)) {
+            core.info(`Do not cancel execution because the workflow was triggered with '${victim.event}'`);
+            should_skip = true;
+        }
+        else {
+            await cancelWorkflowRun(victim, context);
+        }
     }
+    exitSuccess({ shouldSkip: should_skip });
 }
 async function cancelWorkflowRun(run, context) {
     try {
@@ -10201,7 +10210,7 @@ function getBooleanInput(name, defaultValue) {
         return rawInput.toLowerCase() !== 'false';
     }
     else {
-        return rawInput.toLowerCase() !== 'true';
+        return rawInput.toLowerCase() === 'true';
     }
 }
 function getStringArrayInput(name) {
